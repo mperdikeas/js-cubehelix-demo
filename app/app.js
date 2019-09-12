@@ -13,22 +13,74 @@ import PropTypes from 'prop-types';
 
 
 class App extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.updateStart = this.updateStart.bind(this);
+        this.state = {start: 2};
+    }
+
+    updateStart(start) {
+        this.setState({start: start});
+    }
     render() {
-        const msg = this.props.msg+foo()+' '+boo();
         return (
                 <div>
-                <h1>${msg}</h1>
-                <ColourStripe/>
-                <ColourMap width={600} height={600}/>
+                <h1>Demo of the cubehelix implementation</h1>
+                <Controls updateStart={this.updateStart}/>
+                <ColourStripe width={this.props.width} height={50}
+                              start={this.state.start}/>
+                <ColourMap width={this.props.width} height={600}/>
                 </div>
         );
     }
 }
 
 App.propTypes = {
-    msg: PropTypes.string.isRequired
+    width : PropTypes.number.isRequired
 };
 
+
+class Controls extends React.Component {
+    render() {
+        return (
+                <div>
+                <StartControl updateStart={this.props.updateStart}/>
+                </div>
+        );
+    }
+}
+
+Controls.propTypes = {
+    updateStart: PropTypes.func.isRequired
+};
+
+class StartControl extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {value: 2};
+        this.handleInputChange = this.handleInputChange.bind(this);
+    }
+    handleInputChange(e) {
+        this.setState({value: e.target.value});
+        this.props.updateStart(parseFloat(e.target.value));
+    }
+    render() {
+        return (
+            <div>
+                <label htmlFor='start'>Start</label>
+                <input id='start' type='range'
+                            min={0} max={2} step={0.1}
+                            onChange={this.handleInputChange}/>
+                <span>{this.state.value}</span> 
+           </div>
+        );
+    }
+}
+
+StartControl.propTypes = {
+    updateStart: PropTypes.func.isRequired
+};
 
 class ColourStripe extends React.Component {
     render() {
@@ -37,24 +89,43 @@ class ColourStripe extends React.Component {
         };
             
         return (
-                <canvas ref='canvas' width={600} height={50} style={style}>
+                <canvas
+                    ref='canvas'
+                    width={this.props.width}
+                    height={this.props.height}
+                    style={style}>
                 </canvas>
         );
     }
 
+    componentDidUpdate() {
+        this.paint();
+    }
+
     componentDidMount() {
-        const l = cubehelix();
+        this.paint();
+    }
+
+    paint() {
+        const defaults = {start: 0.5, r:-1.5, hue:1.2, gamma:1.0};
+        const options = Object.assign({}, defaults, {start: this.props.start});
+        const l = cubehelix(options);
         const canvas = this.refs.canvas;
         const ctx = canvas.getContext('2d');
         ctx.fillStyle='red';
-        for (let i = 0; i < 600; i++) {
-            const rgb = l(i/600);
+        for (let i = 0; i < this.props.width; i++) {
+            const rgb = l(i/(this.props.width-1));
             ctx.fillStyle=`rgb(${rgb.r*255}, ${rgb.g*255}, ${rgb.b*255})`;
-            ctx.fillRect(i,0,1,100);
+            ctx.fillRect(i,0,1,this.props.height);
         }
+
     }
 }
 
+ColourStripe.propTypes = {
+    width : PropTypes.number.isRequired,
+    start: PropTypes.number.isRequired
+};
 
 class ColourMap extends React.Component {
     render() {
@@ -86,6 +157,8 @@ class ColourMap extends React.Component {
             ctx.fillStyle='blue';
             ctx.fillRect(i, this.props.height*(1-rgb.b),1,1);
         }
+        ctx.strokeStyle='black';
+        ctx.strokeRect(0, 0, this.props.width, this.props.height);
     }
 }
 

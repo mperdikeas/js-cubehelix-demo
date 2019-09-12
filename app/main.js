@@ -9,6 +9,6 @@ $(document).ready(doStuff);
 
 function doStuff() {
 
-    ReactDOM.render(<App msg={'cubehelix demo'}/>, $('#app')[0]);
+    ReactDOM.render(<App width={600}/>, $('#app')[0]);
 
 }
