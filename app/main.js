@@ -9,6 +9,9 @@ $(document).ready(doStuff);
 
 function doStuff() {
 
-    ReactDOM.render(<App width={600}/>, $('#app')[0]);
+    ReactDOM.render(<App geometry={{width: 650
+                                    , height: 650
+                                    , leftMargin: 20
+                                    , bottomMargin:  20}}/>, $('#app')[0]);
 
 }

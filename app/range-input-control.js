@@ -22,7 +22,7 @@ class RangeInputControl extends React.Component {
                        step={this.props.valueConfig.step}
                        value={this.state.value}
                        onChange={this.handleInputChange}/>
-                <span style={{verticalAlign: 'middle'}}>{this.state.value}</span> 
+                <span style={{verticalAlign: 'middle', textAlign: 'right', display:'inline-block', width: '3em'}}>{this.state.value}</span> 
             </div>
         );
     }

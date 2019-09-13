@@ -1,5 +1,14 @@
-body {
-    background: #white;
+h1 {
+    font-size: 120%;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 
-    
+body {
+    margin-left: 10px;
+}
+
+p {
+    text-align: justify;
+    margin-bottom: 1em;
+}
