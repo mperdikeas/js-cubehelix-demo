@@ -14,16 +14,16 @@ class RangeInputControl extends React.Component {
     render() {
         return (
             <div>
-                <label htmlFor='inputValue'>{this.props.name}</label>
-                <input id='inputValue'
+                <label htmlFor='inputValue' style={{display: 'inline-block', width: '5em', verticalAlign: 'middle'}}>{this.props.name}</label>
+                <input style={{verticalAlign: 'middle'}} id='inputValue'
                        type='range'
                        min={this.props.valueConfig.min}
                        max={this.props.valueConfig.max}
                        step={this.props.valueConfig.step}
                        value={this.state.value}
                        onChange={this.handleInputChange}/>
-                <span>{this.state.value}</span> 
-           </div>
+                <span style={{verticalAlign: 'middle'}}>{this.state.value}</span> 
+            </div>
         );
     }
 }

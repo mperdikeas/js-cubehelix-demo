@@ -11,6 +11,7 @@ const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
 });
 
 const config = {
+    mode: 'development',
     context: path.resolve(__dirname, APPDIR),
     entry: './main.js',
     output: {
