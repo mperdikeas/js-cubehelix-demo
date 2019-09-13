@@ -76,7 +76,11 @@ class Controls extends React.Component {
     render() {
         return (
                 <div>
-                <StartControl value={this.props.start} updateStart={this.props.updateStart}/>
+                <RangeInputControl
+                    name='Start'
+                    updateValue={this.props.updateStart}
+                    valueConfig={{min: 0, max: 2, step: 0.1, initial: this.props.start}}
+                />
                 <RotationsControl value={this.props.rotations} updateRotations={this.props.updateRotations}/>
                 <HueControl value={this.props.hue} updateHue={this.props.updateHue}/>
                 <GammaControl value={this.props.gamma} updateGamma={this.props.updateGamma}/>
@@ -96,31 +100,42 @@ Controls.propTypes = {
     gamma: PropTypes.number.isRequired
 };
 
-class StartControl extends React.Component {
+class RangeInputControl extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {value: this.props.value};
+        this.state = {value: this.props.valueConfig.initial};
         this.handleInputChange = this.handleInputChange.bind(this);
     }
     handleInputChange(e) {
         this.setState({value: e.target.value});
-        this.props.updateStart(parseFloat(e.target.value));
+        this.props.updateValue(parseFloat(e.target.value));
     }
     render() {
         return (
             <div>
-                <label htmlFor='start'>Start</label>
-                <input id='start' type='range'
-                      min={0} max={2} step={0.1} value={this.state.value}
-                            onChange={this.handleInputChange}/>
+                <label htmlFor='start'>{this.props.name}</label>
+                <input id='start'
+                       type='range'
+                       min={this.props.valueConfig.min}
+                       max={this.props.valueConfig.max}
+                       step={this.props.valueConfig.step}
+                       value={this.state.value}
+                       onChange={this.handleInputChange}/>
                 <span>{this.state.value}</span> 
            </div>
         );
     }
 }
-StartControl.propTypes = {
-    updateStart: PropTypes.func.isRequired,
-    value: PropTypes.number.isRequired
+RangeInputControl.propTypes = {
+    updateValue: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    valueConfig: PropTypes.shape({
+        min: PropTypes.number.isRequired,
+        max: PropTypes.number.isRequired,
+        step: PropTypes.number.isRequired,
+        initial: PropTypes.number.isRequired
+    })
+    
 };
 
 
