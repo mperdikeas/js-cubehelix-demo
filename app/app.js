@@ -16,10 +16,10 @@ class App extends React.Component {
 
     constructor(props) {
         super(props);
-        this.updateStart = this.updateStart.bind(this);
+        this.updateStart     = this.updateStart    .bind(this);
         this.updateRotations = this.updateRotations.bind(this);
-        this.updateHue = this.updateHue.bind(this);
-        this.updateGamma = this.updateGamma.bind(this);
+        this.updateHue       = this.updateHue      .bind(this);
+        this.updateGamma     = this.updateGamma    .bind(this);
         this.state = {start: 0.5, rotations: -1.5, hue: 1.2, gamma: 1};
     }
 
@@ -81,9 +81,21 @@ class Controls extends React.Component {
                     updateValue={this.props.updateStart}
                     valueConfig={{min: 0, max: 2, step: 0.1, initial: this.props.start}}
                 />
-                <RotationsControl value={this.props.rotations} updateRotations={this.props.updateRotations}/>
-                <HueControl value={this.props.hue} updateHue={this.props.updateHue}/>
-                <GammaControl value={this.props.gamma} updateGamma={this.props.updateGamma}/>
+                <RangeInputControl
+                    name='Rotations'
+                    updateValue={this.props.updateRotations}
+                    valueConfig={{min: -5, max: 5, step: 0.1, initial: this.props.rotations}}
+                />
+                <RangeInputControl
+                    name='Hue'
+                    updateValue={this.props.updateHue}
+                    valueConfig={{min: 0, max: 10, step: 0.1, initial: this.props.hue}}
+                />                
+                <RangeInputControl
+                    name='Gamma'
+                    updateValue={this.props.updateGamma}
+                    valueConfig={{min: -5, max: 20, step: 0.1, initial: this.props.gamma}}
+                />                
                 </div>
         );
     }
@@ -113,8 +125,8 @@ class RangeInputControl extends React.Component {
     render() {
         return (
             <div>
-                <label htmlFor='start'>{this.props.name}</label>
-                <input id='start'
+                <label htmlFor='inputValue'>{this.props.name}</label>
+                <input id='inputValue'
                        type='range'
                        min={this.props.valueConfig.min}
                        max={this.props.valueConfig.max}
@@ -136,90 +148,6 @@ RangeInputControl.propTypes = {
         initial: PropTypes.number.isRequired
     })
     
-};
-
-
-class RotationsControl extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: this.props.value};
-        this.handleInputChange = this.handleInputChange.bind(this);
-    }
-    handleInputChange(e) {
-        this.setState({value: e.target.value});
-        this.props.updateRotations(parseFloat(e.target.value));
-    }
-    render() {
-        return (
-            <div>
-                <label htmlFor='start'>Rotations</label>
-                <input id='start' type='range'
-                   min={-5} max={5} step={0.1} value={this.state.value}
-                            onChange={this.handleInputChange}/>
-                <span>{this.state.value}</span> 
-           </div>
-        );
-    }
-}
-RotationsControl.propTypes = {
-    updateRotations: PropTypes.func.isRequired,
-    value: PropTypes.number.isRequired
-};
-
-
-class HueControl extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: this.props.value};
-        this.handleInputChange = this.handleInputChange.bind(this);
-    }
-    handleInputChange(e) {
-        this.setState({value: e.target.value});
-        this.props.updateHue(parseFloat(e.target.value));
-    }
-    render() {
-        return (
-            <div>
-                <label htmlFor='start'>Hue</label>
-                <input id='start' type='range'
-                   min={0} max={10} step={0.1} value={this.state.value}
-                            onChange={this.handleInputChange}/>
-                <span>{this.state.value}</span> 
-           </div>
-        );
-    }
-}
-HueControl.propTypes = {
-    updateHue: PropTypes.func.isRequired,
-    value: PropTypes.number.isRequired
-};
-
-
-class GammaControl extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: this.props.value};
-        this.handleInputChange = this.handleInputChange.bind(this);
-    }
-    handleInputChange(e) {
-        this.setState({value: e.target.value});
-        this.props.updateGamma(parseFloat(e.target.value));
-    }
-    render() {
-        return (
-            <div>
-                <label htmlFor='start'>Gamma</label>
-                <input id='start' type='range'
-                   min={0} max={10} step={0.1} value={this.state.value}
-                            onChange={this.handleInputChange}/>
-                <span>{this.state.value}</span> 
-           </div>
-        );
-    }
-}
-GammaControl.propTypes = {
-    updateGamma: PropTypes.func.isRequired,
-    value: PropTypes.number.isRequired
 };
 
 
@@ -310,14 +238,14 @@ class ColourMap extends React.Component {
                                                      , gamma: this.props.gamma});
         const l = cubehelix(options);        
         ctx.fillStyle='red';
-        for (let i = 0; i < this.props.width; i++) {
-            const rgb = l(i/(this.props.width-1));
+        for (let i = 0; i < 10*this.props.width; i++) {
+            const rgb = l(i/(10*this.props.width-1));
             ctx.fillStyle='red';
-            ctx.fillRect(i, this.props.height*(1-rgb.r),1,1);
+            ctx.fillRect(i/10, this.props.height*(1-rgb.r),1,1);
             ctx.fillStyle='green';
-            ctx.fillRect(i, this.props.height*(1-rgb.g),1,1);
+            ctx.fillRect(i/10, this.props.height*(1-rgb.g),1,1);
             ctx.fillStyle='blue';
-            ctx.fillRect(i, this.props.height*(1-rgb.b),1,1);
+            ctx.fillRect(i/10, this.props.height*(1-rgb.b),1,1);
         }
         ctx.strokeStyle='black';
         ctx.strokeRect(0, 0, this.props.width, this.props.height);
