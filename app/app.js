@@ -19,7 +19,8 @@ class App extends React.Component {
         this.updateStart = this.updateStart.bind(this);
         this.updateRotations = this.updateRotations.bind(this);
         this.updateHue = this.updateHue.bind(this);
-        this.state = {start: 0.5, rotations: -1.5, hue: 1.2};
+        this.updateGamma = this.updateGamma.bind(this);
+        this.state = {start: 0.5, rotations: -1.5, hue: 1.2, gamma: 1};
     }
 
     updateStart(x) {
@@ -31,6 +32,9 @@ class App extends React.Component {
     updateHue(x) {
         this.setState({hue: x});
     }
+    updateGamma(x) {
+        this.setState({gamma: x});
+    }
     render() {
         return (
                 <div>
@@ -38,21 +42,25 @@ class App extends React.Component {
                 <Controls updateStart={this.updateStart}
                           updateRotations={this.updateRotations}
                           updateHue={this.updateHue}
+                          updateGamma={this.updateGamma}
                           start={this.state.start}
                           rotations={this.state.rotations}
                           hue={this.state.hue}
+                          gamma={this.state.gamma}
                 />
                 <ColourStripe width={this.props.width}
                               height={50}
                               start={this.state.start}
                               rotations={this.state.rotations}
                               hue={this.state.hue}
+                              gamma={this.state.gamma}
                 />
                 <ColourMap width={this.props.width}
                            height={600}
                            start={this.state.start}
                            rotations={this.state.rotations}
                            hue={this.state.hue}
+                           gamma={this.state.gamma}
                 />
                 </div>
         );
@@ -71,6 +79,7 @@ class Controls extends React.Component {
                 <StartControl value={this.props.start} updateStart={this.props.updateStart}/>
                 <RotationsControl value={this.props.rotations} updateRotations={this.props.updateRotations}/>
                 <HueControl value={this.props.hue} updateHue={this.props.updateHue}/>
+                <GammaControl value={this.props.gamma} updateGamma={this.props.updateGamma}/>
                 </div>
         );
     }
@@ -80,9 +89,11 @@ Controls.propTypes = {
     updateStart: PropTypes.func.isRequired,
     updateRotations: PropTypes.func.isRequired,
     updateHue: PropTypes.func.isRequired,
+    updateGamma: PropTypes.func.isRequired,
     start: PropTypes.number.isRequired,
     rotations: PropTypes.number.isRequired,
-    hue: PropTypes.number.isRequired
+    hue: PropTypes.number.isRequired,
+    gamma: PropTypes.number.isRequired
 };
 
 class StartControl extends React.Component {
@@ -169,6 +180,34 @@ HueControl.propTypes = {
 };
 
 
+class GammaControl extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {value: this.props.value};
+        this.handleInputChange = this.handleInputChange.bind(this);
+    }
+    handleInputChange(e) {
+        this.setState({value: e.target.value});
+        this.props.updateGamma(parseFloat(e.target.value));
+    }
+    render() {
+        return (
+            <div>
+                <label htmlFor='start'>Gamma</label>
+                <input id='start' type='range'
+                   min={0} max={10} step={0.1} value={this.state.value}
+                            onChange={this.handleInputChange}/>
+                <span>{this.state.value}</span> 
+           </div>
+        );
+    }
+}
+GammaControl.propTypes = {
+    updateGamma: PropTypes.func.isRequired,
+    value: PropTypes.number.isRequired
+};
+
+
 class ColourStripe extends React.Component {
     render() {
         const style={
@@ -197,7 +236,8 @@ class ColourStripe extends React.Component {
         const defaults = {start: 0.5, r:-1.5, hue:1.2, gamma:1.0};
         const options = Object.assign({}, defaults, {start: this.props.start
                                                      , r: this.props.rotations
-                                                     , hue: this.props.hue});
+                                                     , hue: this.props.hue
+                                                     , gamma: this.props.gamma});
         const l = cubehelix(options);
         const canvas = this.refs.canvas;
         const ctx = canvas.getContext('2d');
@@ -215,7 +255,8 @@ ColourStripe.propTypes = {
     width : PropTypes.number.isRequired,
     start: PropTypes.number.isRequired,
     rotations: PropTypes.number.isRequired,
-    hue: PropTypes.number.isRequired
+    hue: PropTypes.number.isRequired,
+    gamma: PropTypes.number.isRequired
 };
 
 class ColourMap extends React.Component {
@@ -250,7 +291,8 @@ class ColourMap extends React.Component {
         const defaults = {start: 0.5, r:-1.5, hue:1.2, gamma:1.0};
         const options = Object.assign({}, defaults, {start: this.props.start
                                                      , r: this.props.rotations
-                                                     , hue: this.props.hue});
+                                                     , hue: this.props.hue
+                                                     , gamma: this.props.gamma});
         const l = cubehelix(options);        
         ctx.fillStyle='red';
         for (let i = 0; i < this.props.width; i++) {
@@ -271,7 +313,8 @@ ColourMap.propTypes = {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     start: PropTypes.number.isRequired,
-    rotations: PropTypes.number.isRequired
+    rotations: PropTypes.number.isRequired,
+    gamma: PropTypes.number.isRequired    
 };
 
 export default App;
