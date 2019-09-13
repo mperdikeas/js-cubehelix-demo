@@ -17,21 +17,35 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.updateStart = this.updateStart.bind(this);
-        this.state = {start: 2};
+        this.updateRotations = this.updateRotations.bind(this);
+        this.state = {start: 0.5, rotations: -1.5};
     }
 
     updateStart(start) {
         this.setState({start: start});
     }
+    updateRotations(rotations) {
+        this.setState({rotations: rotations});
+    }
     render() {
         return (
                 <div>
                 <h1>Demo of the cubehelix implementation</h1>
-                <Controls updateStart={this.updateStart}/>
-                <ColourStripe width={this.props.width} height={50}
-                              start={this.state.start}/>
-                <ColourMap width={this.props.width} height={600}
-                              start={this.state.start}/>
+                <Controls updateStart={this.updateStart}
+                          updateRotations={this.updateRotations}
+                          start={this.state.start}
+                          rotations={this.state.rotations}
+                />
+                <ColourStripe width={this.props.width}
+                              height={50}
+                              start={this.state.start}
+                              rotations={this.state.rotations}
+                />
+                <ColourMap width={this.props.width}
+                           height={600}
+                           start={this.state.start}
+                           rotations={this.state.rotations}
+                />
                 </div>
         );
     }
@@ -46,20 +60,24 @@ class Controls extends React.Component {
     render() {
         return (
                 <div>
-                <StartControl updateStart={this.props.updateStart}/>
+                <StartControl value={this.props.start} updateStart={this.props.updateStart}/>
+                <RotationsControl value={this.props.rotations} updateRotations={this.props.updateRotations}/>
                 </div>
         );
     }
 }
 
 Controls.propTypes = {
-    updateStart: PropTypes.func.isRequired
+    updateStart: PropTypes.func.isRequired,
+    updateRotations: PropTypes.func.isRequired,
+    start: PropTypes.number.isRequired,
+    rotations: PropTypes.number.isRequired
 };
 
 class StartControl extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {value: 2};
+        this.state = {value: this.props.value};
         this.handleInputChange = this.handleInputChange.bind(this);
     }
     handleInputChange(e) {
@@ -71,7 +89,7 @@ class StartControl extends React.Component {
             <div>
                 <label htmlFor='start'>Start</label>
                 <input id='start' type='range'
-                            min={0} max={2} step={0.1}
+                      min={0} max={2} step={0.1} value={this.state.value}
                             onChange={this.handleInputChange}/>
                 <span>{this.state.value}</span> 
            </div>
@@ -80,7 +98,37 @@ class StartControl extends React.Component {
 }
 
 StartControl.propTypes = {
-    updateStart: PropTypes.func.isRequired
+    updateStart: PropTypes.func.isRequired,
+    value: PropTypes.number.isRequired
+};
+
+// TODO: see whether I can create a single class for all ParameterControls
+class RotationsControl extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {value: this.props.value};
+        this.handleInputChange = this.handleInputChange.bind(this);
+    }
+    handleInputChange(e) {
+        this.setState({value: e.target.value});
+        this.props.updateRotations(parseFloat(e.target.value));
+    }
+    render() {
+        return (
+            <div>
+                <label htmlFor='start'>Rotations</label>
+                <input id='start' type='range'
+                   min={-5} max={5} step={0.1} value={this.state.value}
+                            onChange={this.handleInputChange}/>
+                <span>{this.state.value}</span> 
+           </div>
+        );
+    }
+}
+
+RotationsControl.propTypes = {
+    updateRotations: PropTypes.func.isRequired,
+    value: PropTypes.number.isRequired
 };
 
 class ColourStripe extends React.Component {
@@ -109,7 +157,7 @@ class ColourStripe extends React.Component {
 
     paint() {
         const defaults = {start: 0.5, r:-1.5, hue:1.2, gamma:1.0};
-        const options = Object.assign({}, defaults, {start: this.props.start});
+        const options = Object.assign({}, defaults, {start: this.props.start, r: this.props.rotations});
         const l = cubehelix(options);
         const canvas = this.refs.canvas;
         const ctx = canvas.getContext('2d');
@@ -125,7 +173,9 @@ class ColourStripe extends React.Component {
 
 ColourStripe.propTypes = {
     width : PropTypes.number.isRequired,
-    start: PropTypes.number.isRequired
+    start: PropTypes.number.isRequired,
+    rotations: PropTypes.number.isRequired
+    
 };
 
 class ColourMap extends React.Component {
@@ -158,8 +208,7 @@ class ColourMap extends React.Component {
         ctx.fillStyle='white';
         ctx.fillRect(0, 0, this.props.width, this.props.height);
         const defaults = {start: 0.5, r:-1.5, hue:1.2, gamma:1.0};
-        const options = Object.assign({}, defaults, {start: this.props.start});
-        const l = cubehelix(options);
+        const options = Object.assign({}, defaults, {start: this.props.start, r: this.props.rotations});        const l = cubehelix(options);
         ctx.fillStyle='red';
         for (let i = 0; i < this.props.width; i++) {
             const rgb = l(i/(this.props.width-1));
@@ -178,7 +227,8 @@ class ColourMap extends React.Component {
 ColourMap.propTypes = {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-    start: PropTypes.number.isRequired
+    start: PropTypes.number.isRequired,
+    rotations: PropTypes.number.isRequired
 };
 
 export default App;
