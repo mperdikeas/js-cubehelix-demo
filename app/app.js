@@ -30,7 +30,8 @@ class App extends React.Component {
                 <Controls updateStart={this.updateStart}/>
                 <ColourStripe width={this.props.width} height={50}
                               start={this.state.start}/>
-                <ColourMap width={this.props.width} height={600}/>
+                <ColourMap width={this.props.width} height={600}
+                              start={this.state.start}/>
                 </div>
         );
     }
@@ -143,10 +144,22 @@ class ColourMap extends React.Component {
         );
     }
 
+    componentDidUpdate() {
+        this.paint();
+    }
+
     componentDidMount() {
-        const l = cubehelix();
+        this.paint();
+    }
+
+    paint() {
         const canvas = this.refs.canvas;
         const ctx = canvas.getContext('2d');
+        ctx.fillStyle='white';
+        ctx.fillRect(0, 0, this.props.width, this.props.height);
+        const defaults = {start: 0.5, r:-1.5, hue:1.2, gamma:1.0};
+        const options = Object.assign({}, defaults, {start: this.props.start});
+        const l = cubehelix(options);
         ctx.fillStyle='red';
         for (let i = 0; i < this.props.width; i++) {
             const rgb = l(i/(this.props.width-1));
@@ -164,7 +177,8 @@ class ColourMap extends React.Component {
 
 ColourMap.propTypes = {
     width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired
+    height: PropTypes.number.isRequired,
+    start: PropTypes.number.isRequired
 };
 
 export default App;
