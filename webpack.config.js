@@ -38,7 +38,7 @@ const config = {
                     // css-loader
                     {loader: 'css-loader',
                      options: {
-                         modules: true
+                         modules: false
                      }
                     }]
             },{

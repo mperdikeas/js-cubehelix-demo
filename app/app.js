@@ -40,9 +40,16 @@ class App extends React.Component {
     render() {
         return (
                 <div style={{width: this.props.geometry.width}}>
-                <h1>Demo of the cubehelix implementation</h1>
+                <h1>Demo of the cubehelix NPM library</h1>
                 <p>
-                The motivation for the cubehelix function is the following: assume you are
+                <a href='https://github.com/mperdikeas/js-cubehelix-demo'>Github repo</a>
+                </p>
+                <p>
+                    This demo is build using the 'cubehelix' <b>npm</b> package that's
+                    available <a href='https://www.npmjs.com/package/cubehelix'>here</a>.
+                </p>
+                <p>
+                The motivation for the <span className='cubehelix'>cubehelix</span> algorithm is the following: assume you are
             given a 2D matrix of "intensities". E.g. each coordinate of the matrix holds a single
             scalar (one-dimensional) numeric value (float or integer).
                 Suppose then that you are further asked to prepare a visualization
@@ -59,28 +66,57 @@ class App extends React.Component {
                 <p>
                 The problem is to devise an appropriate arrangement of a path in 3D space such
             that:
-                </p>
+
                 <ul>
                 <li>at the beginning of the path you have the darkest possible colour (black),
-            at the end of the path the lightest possible colour (white)</li>
+            at the end of the path you have the lightest possible colour (white)</li>
                 <li>as you
-            progress from the beginning to the end of the path a variety of colours are 
+            progress, from the beginning towards the end of the path, a variety of colours are 
             employed</li>
                 <li>the luminosity monotonically increases.</li>
                 </ul>
+                </p>
                 <p>
                 This is further complicated by the fact that the apparent luminosity perceived
             by the human eye does not assign equal weight to the three dimensions of the RGB
             space (bright green appears much more luminous than bright blue).
             </p>
                 <p>
-                The cubehelix algorithm &hellip;
+                The <span className='cubehelix'>cubehelix</span> algorithm generates such a function
+            that maps intensity values in the [0, 1] range to a wide
+            variety of color in the RGB space such that as a variable <tt>x</tt> proceeds
+            from 0 to 1,
+            the perceived luminance of the color to which that value <tt>x</tt> is
+            mapped monotonically increases. It does so by arranging a helix in the 3D RGB space.
+                </p>
+                <p>
+                The paper defining the cubehelix algorithm (on which this demo is based)
+            is available <a href='http://astron-soc.in/bulletin/11June/289392011.pdf'>here</a>.
+                The algorithm is also discussed <a href='http://www.mrao.cam.ac.uk/~dag/CUBEHELIX/'>here</a>.
+
+            </p>
+                <p>
+                Four parameters (<i>start</i>, <i>rotations</i>, <i>hue</i> and <i>gamma</i>)
+            control the exact shape of the helix. Modifying these parameters gives rise to a number
+            of different mapping functions that all exhibit the crucial monotonically increasing luminance
+            property.
+                </p>
+                <p>
+                In the diagram below the horizontal axis stands for the intensity value
+            (in the range [0, 1]). The <span style={{color: 'red', fontWeight: 'bold'}}>red</span>, <span style={{color: 'green', fontWeight: 'bold'}}>green</span>,
+            and <span style={{color: 'blue', fontWeight: 'bold'}}>blue</span> lines
+            represent the strength (in the [0, 1] range) of the R, G and B components in the RGB space.
+                The solid <span className='bold'>black</span> line that runs diagonally across the graph is the luminance
+            perceived by the human eye.
+                You will
+            notice that for certain helix configuration parameters, the R, G or B values undershoot or overshoot
+            the [0, 1] range. When this happens to an obscene degree, the monotonicity of the perceived luminance
+            may suffer a little.
                 </p>
                 <div style={{display: 'flex'
                              , marginLeft: this.props.geometry.leftMargin
                              , flexDirection: 'row'
                              , justifyContent: 'space-between'
-                             , border: '1px solid red'
                              }}>
                 <Controls updateStart={this.updateStart}
                           updateRotations={this.updateRotations}
@@ -94,12 +130,12 @@ class App extends React.Component {
                 <div style={{marginLeft: '2em'}}>
                 For an explanation on the nature of the <i>start</i>
                 , <i>rotations</i>, <i>hue</i> and <i>gamma</i> parameters
-                refer to the links above.
+            refer to the <span className='bold'>cubehelix</span> algorithm (see the links above).
                 </div>
                 </div>
                 <div style={{marginLeft: this.props.geometry.leftMargin}}>
                 <ColourStripe width={this.props.geometry.width-this.props.geometry.leftMargin}
-                              height={50}
+                              height={100}
                               start={this.state.start}
                               rotations={this.state.rotations}
                               hue={this.state.hue}
@@ -133,7 +169,7 @@ App.propTypes = {
 class Controls extends React.Component {
     render() {
         return (
-                <div style={{minWidth: '275px'}}>
+                <div style={{minWidth: '275px', marginTop: '10px', marginBottom: '20px'}}>
                 <RangeInputControl
                     name='Start'
                     updateValue={this.props.updateStart}
@@ -142,7 +178,7 @@ class Controls extends React.Component {
                 <RangeInputControl
                     name='Rotations'
                     updateValue={this.props.updateRotations}
-                    valueConfig={{min: -5, max: 5, step: 0.1, initial: this.props.rotations}}
+                    valueConfig={{min: -10, max: 30, step: 0.1, initial: this.props.rotations}}
                 />
                 <RangeInputControl
                     name='Hue'
@@ -152,7 +188,7 @@ class Controls extends React.Component {
                 <RangeInputControl
                     name='Gamma'
                     updateValue={this.props.updateGamma}
-                    valueConfig={{min: -5, max: 20, step: 0.1, initial: this.props.gamma}}
+                    valueConfig={{min: 0, max: 20, step: 0.1, initial: this.props.gamma}}
                 />                
                 </div>
         );
@@ -266,6 +302,20 @@ class ColourMap extends React.Component {
         ctx.strokeText('1', this.props.width-15       , this.plotHeight+15);        
     }
 
+    perceivedLuminance(rgb) {
+
+        function clip(a) {
+            if (a<0) return 0;
+            if (a>1) return 1;
+            return a;
+        }
+
+        return 0.30*clip(rgb.r)
+            + 0.59*clip(rgb.g)
+            + 0.11*clip(rgb.b);
+
+    }
+
     paint() {
         const canvas = this.refs.canvas;
         const ctx = canvas.getContext('2d');
@@ -289,6 +339,8 @@ class ColourMap extends React.Component {
             ctx.fillRect(x, f(rgb.g), 1, 1);
             ctx.fillStyle='blue';
             ctx.fillRect(x, f(rgb.b), 1, 1);
+            ctx.fillStyle='black';
+            ctx.fillRect(x, f(this.perceivedLuminance(rgb)), 1, 1);
         }
         ctx.strokeStyle='black';
         ctx.strokeRect(this.props.leftMargin, 0, this.plotWidth, this.plotHeight);
