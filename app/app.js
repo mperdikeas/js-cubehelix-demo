@@ -45,18 +45,20 @@ class App extends React.Component {
                 <a href='https://github.com/mperdikeas/js-cubehelix-demo'>Github repo</a>
                 </p>
                 <p>
-                    This demo is build using the 'cubehelix' <b>npm</b> package that's
+                    This demo is build using the <tt>cubehelix</tt> <b>npm</b> package that's
                     available <a href='https://www.npmjs.com/package/cubehelix'>here</a>.
                 </p>
                 <p>
-                The motivation for the <span className='cubehelix'>cubehelix</span> algorithm is the following: assume you are
-            given a 2D matrix of "intensities". E.g. each coordinate of the matrix holds a single
-            scalar (one-dimensional) numeric value (float or integer).
+                The motivation for the <span className='cubehelix'>cubehelix</span> algorithm
+            is the following: assume you are
+            given a 2D matrix of numerical values. E.g. each coordinate of the matrix holds a single
+            scalar (one-dimensional) numeric value (float or integer). Such matrixes are common in
+            astronomy but can also be used to represent, e.g. the salinity of the ocean (at the surface),
+            or the average rainfall over an area.
                 Suppose then that you are further asked to prepare a visualization
-            for the contents of said matrix. The simplest approach would be to normalize every
-            value of the matrix so that they all fall in the [0, 1] range and then map the
-            continum of values in the [0, 1] range to some gray-scale (e.g. map 0 to black, 1 to
-            white and all intermediate values linearly between 0 and 1).
+            for the contents of said matrix. The simplest approach would be to linearly map the range
+            [min, max] of values to some gray-scale. E.g. map the lowest value to black, the highest
+            to white and linearly interpolate all intermediate values.
                 </p>
                 <p>
                 But what if you wanted to produce a visualization using color?
@@ -64,33 +66,33 @@ class App extends React.Component {
                a cylinder and so on). How to map one dimensional values to three dimensions?
                 </p>
                 <p>
-                The problem is to devise an appropriate arrangement of a path in 3D space such
+                The problem is to devise an appropriate arrangement of a path in the 3D RGB space such
             that:
-
                 <ul>
                 <li>at the beginning of the path you have the darkest possible colour (black),
             at the end of the path you have the lightest possible colour (white)</li>
                 <li>as you
             progress, from the beginning towards the end of the path, a variety of colours are 
             employed</li>
-                <li>the luminosity monotonically increases.</li>
+                <li>the perceived brightness monotonically increases.</li>
                 </ul>
                 </p>
                 <p>
-                This is further complicated by the fact that the apparent luminosity perceived
+                This is further complicated by the fact that the brightness perceived
             by the human eye does not assign equal weight to the three dimensions of the RGB
             space (bright green appears much more luminous than bright blue).
             </p>
                 <p>
-                The <span className='cubehelix'>cubehelix</span> algorithm generates such a function
-            that maps intensity values in the [0, 1] range to a wide
+                The <span className='cubehelix'>cubehelix</span> algorithm generates such a
+            function, actually a family of such mapping functions,
+            that map intensity values in the [0, 1] range to a wide
             variety of color in the RGB space such that as a variable <tt>x</tt> proceeds
             from 0 to 1,
-            the perceived luminance of the color to which that value <tt>x</tt> is
-            mapped monotonically increases. It does so by arranging a helix in the 3D RGB space.
+            the perceived brightness of the color to which that value <tt>x</tt> is
+            mapped monotonically increases. It does so by arranging a tapered helix in the 3D RGB space.
                 </p>
                 <p>
-                The paper defining the cubehelix algorithm (on which this demo is based)
+                The paper defining the <i>cubehelix</i> algorithm
             is available <a href='http://astron-soc.in/bulletin/11June/289392011.pdf'>here</a>.
                 The algorithm is also discussed <a href='http://www.mrao.cam.ac.uk/~dag/CUBEHELIX/'>here</a>.
 
@@ -102,16 +104,25 @@ class App extends React.Component {
             property.
                 </p>
                 <p>
-                In the diagram below the horizontal axis stands for the intensity value
-            (in the range [0, 1]). The <span style={{color: 'red', fontWeight: 'bold'}}>red</span>, <span style={{color: 'green', fontWeight: 'bold'}}>green</span>,
-            and <span style={{color: 'blue', fontWeight: 'bold'}}>blue</span> lines
-            represent the strength (in the [0, 1] range) of the R, G and B components in the RGB space.
-                The solid <span className='bold'>black</span> line that runs diagonally across the graph is the luminance
-            perceived by the human eye.
-                You will
-            notice that for certain helix configuration parameters, the R, G or B values undershoot or overshoot
-            the [0, 1] range. When this happens to an obscene degree, the monotonicity of the perceived luminance
-            may suffer a little.
+                In the diagram below the horizontal axis stands for variable <tt>x</tt> described above.
+                Variable <tt>x</tt> takes values in the [0, 1] range. That value is then mapped to a color
+                in the RGB space according to the <i>cubehelix</i> algorithm. As mentioned,
+            the <i>cubehelix</i> algorithm is capable of generating a family of such mapping functions according
+            to four configuration parameters (see below) that control the shape of the helix.
+                </p>
+                <p>
+                The R, G and B components of the color (to which variable <tt>x</tt> is mapped) are represented by
+            the  <span style={{color: 'red', fontWeight: 'bold'}}>red</span>,&nbsp;
+                <span style={{color: 'green', fontWeight: 'bold'}}>green</span>,
+            and <span style={{color: 'blue', fontWeight: 'bold'}}>blue</span> lines in the plot below.
+                </p>
+                <p>
+                The solid <span className='bold'>black</span> line that runs diagonally across the plot is the brightness
+            perceived by the human eye. You will
+            notice that for certain helix configuration parameters, the R, G or B values fall outside of 
+            the [0, 1] range. When this happens to an obscene degree, the monotonicity of the perceived brightness
+            may suffer a little. In particular, the <i>hue</i> configuration parameter is the one that can
+            more easily disrupt the shape of the perceived brightness function.
                 </p>
                 <div style={{display: 'flex'
                              , marginLeft: this.props.geometry.leftMargin
