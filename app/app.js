@@ -7,12 +7,11 @@ var      cx = require('classnames');
 
 
 import {foo, boo} from './util.js';
-import RangeInputControl from './range-input-control.js';
+import ControlPanel from './control-panel.js';
 import Text from './text.js';
 import {cubehelix} from 'cubehelix';
 
 import PropTypes from 'prop-types';
-
 
 
 class App extends React.Component {
@@ -23,7 +22,8 @@ class App extends React.Component {
         this.updateRotations = this.updateRotations.bind(this);
         this.updateHue       = this.updateHue      .bind(this);
         this.updateGamma     = this.updateGamma    .bind(this);
-        this.state = {start: 0.5, rotations: -1.5, hue: 1.2, gamma: 1};
+        this.restoreDefaults = this.restoreDefaults.bind(this);
+        this.state = App.defaultConfig;
     }
 
     updateStart(x) {
@@ -38,32 +38,26 @@ class App extends React.Component {
     updateGamma(x) {
         this.setState({gamma: x});
     }
+    restoreDefaults() {
+        this.setState(App.defaultConfig);
+    }
     render() {
         return (
                 <div style={{width: this.props.geometry.width}}>
                 <Text/>
-                <div style={{display: 'flex'
-                             , marginLeft: this.props.geometry.leftMargin
-                             , flexDirection: 'row'
-                             , justifyContent: 'space-between'
-                             }}>
-                    <Controls updateStart={this.updateStart}
-                          updateRotations={this.updateRotations}
-                          updateHue={this.updateHue}
-                          updateGamma={this.updateGamma}
-                          start={this.state.start}
-                          rotations={this.state.rotations}
-                          hue={this.state.hue}
-                          gamma={this.state.gamma}
-                    />
-                    <div style={{marginLeft: '2em'}}>
-                        For an explanation on the nature of the <i>start</i>
-                        , <i>rotations</i>, <i>hue</i> and <i>gamma</i> parameters
-                        refer to
-                        the <span className='bold'>cubehelix</span> algorithm
-                       (see the links above).
-                    </div>
-                </div>
+                <ControlPanel marginLeft={this.props.geometry.leftMargin}
+                              updateStart={this.updateStart}
+                              updateRotations={this.updateRotations}
+                              updateHue={this.updateHue}
+                              updateGamma={this.updateGamma}
+                              helixConfig={{ start    : this.state.start,
+                                             rotations: this.state.rotations,
+                                             hue      : this.state.hue,
+                                             gamma    : this.state.gamma
+                                           }}
+                              restoreDefaults={this.restoreDefaults}
+
+                />
                 <div style={{marginLeft: this.props.geometry.leftMargin}}>
                 <ColourStripe width={this.props.geometry.width-this.props.geometry.leftMargin}
                               height={100}
@@ -96,46 +90,7 @@ App.propTypes = {
     })
 };
 
-
-class Controls extends React.Component {
-    render() {
-        return (
-                <div style={{minWidth: '275px', marginTop: '10px', marginBottom: '20px'}}>
-                <RangeInputControl
-                    name='Start'
-                    updateValue={this.props.updateStart}
-                    valueConfig={{min: 0, max: 2, step: 0.1, initial: this.props.start}}
-                />
-                <RangeInputControl
-                    name='Rotations'
-                    updateValue={this.props.updateRotations}
-                    valueConfig={{min: -10, max: 30, step: 0.1, initial: this.props.rotations}}
-                />
-                <RangeInputControl
-                    name='Hue'
-                    updateValue={this.props.updateHue}
-                    valueConfig={{min: 0, max: 10, step: 0.1, initial: this.props.hue}}
-                />                
-                <RangeInputControl
-                    name='Gamma'
-                    updateValue={this.props.updateGamma}
-                    valueConfig={{min: 0, max: 20, step: 0.1, initial: this.props.gamma}}
-                />                
-                </div>
-        );
-    }
-}
-
-Controls.propTypes = {
-    updateStart: PropTypes.func.isRequired,
-    updateRotations: PropTypes.func.isRequired,
-    updateHue: PropTypes.func.isRequired,
-    updateGamma: PropTypes.func.isRequired,
-    start: PropTypes.number.isRequired,
-    rotations: PropTypes.number.isRequired,
-    hue: PropTypes.number.isRequired,
-    gamma: PropTypes.number.isRequired
-};
+App.defaultConfig = {start: 0.5, rotations: -1.5, hue: 1.2, gamma: 1};
 
 
 class ColourStripe extends React.Component {

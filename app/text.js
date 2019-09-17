@@ -86,9 +86,11 @@ class Text extends React.Component {
                 The solid <span className='bold'>black</span> line that runs diagonally across the plot is the brightness
             perceived by the human eye. You will
             notice that for certain helix configuration parameters, the R, G or B values fall outside of 
-            the [0, 1] range. When this happens to an obscene degree, the monotonicity of the perceived brightness
-            may suffer a little. In particular, the <i>hue</i> configuration parameter is the one that can
-            more easily disrupt the shape of the perceived brightness function.
+            the [0, 1] range. When this happens to an obscene degree, the monotonicity of the
+            perceived brightness function (the <span className={'bold'}>black</span> line in the plot)
+            may suffer a little. In particular, the <i>hue</i> and the <i>gamma</i> configuration
+            parameters are the two that can more easily disrupt the shape of the perceived brightness
+            function.
                 </p>
                 </div>
         );
