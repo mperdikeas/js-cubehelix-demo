@@ -11,7 +11,7 @@ function doStuff() {
 
     ReactDOM.render(<App geometry={{width: 650
                                     , height: 650
-                                    , leftMargin: 20
+                                    , leftMargin: 30
                                     , bottomMargin:  20}}/>, $('#app')[0]);
 
 }
