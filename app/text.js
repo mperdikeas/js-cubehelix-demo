@@ -11,8 +11,9 @@ class Text extends React.Component {
                 <a href='https://github.com/mperdikeas/js-cubehelix-demo'>Github repo</a>
                 </p>
                 <p>
-                This demo is build using the <tt>cubehelix</tt> <b>npm</b> package that's
-                    available <a href='https://www.npmjs.com/package/cubehelix'>here</a>.
+                This demo is built using
+            the <a href='https://www.npmjs.com/package/cubehelix'>cubehelix npm package</a> which
+            implements Dave Green's <span className='cubehelix'>cubehelix</span> algorithm.
             </p>
                 <p>
                 The motivation for the <span className='cubehelix'>cubehelix</span> algorithm
@@ -61,7 +62,8 @@ class Text extends React.Component {
                 The paper defining the <i>cubehelix</i> algorithm
             is available <a href='http://astron-soc.in/bulletin/11June/289392011.pdf'>here</a>.
                 The algorithm is also discussed <a href='http://www.mrao.cam.ac.uk/~dag/CUBEHELIX/'>here</a>.
-
+                A more general discussion on the topic of colormaps is
+            available <a href='https://jakevdp.github.io/blog/2014/10/16/how-bad-is-your-colormap/'>here</a>.
                 </p>
                 <p>
                 Four parameters (<i>start</i>, <i>rotations</i>, <i>hue</i> and <i>gamma</i>)
