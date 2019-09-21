@@ -45,7 +45,7 @@ class App extends React.Component {
         return (
                 <div style={{width: this.props.geometry.width}}>
                 <Text/>
-                <ControlPanel marginLeft={this.props.geometry.leftMargin}
+                <ControlPanel leftMargin={this.props.geometry.leftMargin}
                               updateStart={this.updateStart}
                               updateRotations={this.updateRotations}
                               updateHue={this.updateHue}
