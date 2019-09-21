@@ -10,24 +10,24 @@ class RangeInputControl extends React.Component {
                                                             , this.props.valueConfig.max);
     }
     handleInputChange(e) {
-        const y = this.props.valueConfig.power?this.quadraticLaw(parseFloat(e.target.value))
+        const y = this.props.valueConfig.polynomial?this.polynomialLaw(parseFloat(e.target.value))
                   :parseFloat(e.target.value);
         this.props.updateValue(y);
     }
 
 
-    quadraticLaw(x) {
+    polynomialLaw(x) {
         return this.coef.a*Math.pow(x, 4)+this.coef.b;
     }
 
-    quadraticLawReverse(y) {
+    polynomialLawReverse(y) {
         const x = Math.pow((y-this.coef.b)/this.coef.a, 1/4);
         return x;
     }
 
     y2x(y) {
-        if (this.props.valueConfig.power)
-            return this.quadraticLawReverse(y);
+        if (this.props.valueConfig.polynomial)
+            return this.polynomialLawReverse(y);
         else
             return y;
     }
@@ -58,7 +58,7 @@ RangeInputControl.propTypes = {
         max: PropTypes.number.isRequired,
         step: PropTypes.number.isRequired,
         value: PropTypes.number.isRequired,
-        power: PropTypes.bool.isRequired
+        polynomial: PropTypes.bool.isRequired
     })
     
 };
@@ -66,6 +66,18 @@ RangeInputControl.propTypes = {
 RangeInputControl.MAX = 10;
 
 RangeInputControl.calculateCoefficients = (y1, y2)=>{
+    /*
+     The goal is to calculate the a and b coefficients of a polynomial function
+     f(x) = a*x^4 + b
+     such that x1 maps to y1 and x2 maps to y2
+     To simplify things, we've set x1 to 0
+
+     The [x1, x2] interval is the domain of the slider and the [y1, y2] interval is the
+     range to which this domain is mapped through our polynomial function.
+
+     This is very useful for non-linear sliders when we want to be explore in more
+     detail the small values in the slider.
+    */
         const x1 = 0;
         const x2 = RangeInputControl.MAX;
         const b = y1;

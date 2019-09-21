@@ -66,22 +66,22 @@ class Controls extends React.Component {
                 <RangeInputControl
                     name='Start'
                     updateValue={this.props.updateStart}
-            valueConfig={{min: 0, max: 5, step: 0.1, value: this.props.helixConfig.start, power: false}}
+            valueConfig={{min: 0, max: 5, step: 0.1, value: this.props.helixConfig.start, polynomial: false}}
                 />
                 <RangeInputControl
                     name='Rotations'
                     updateValue={this.props.updateRotations}
-            valueConfig={{min: -10, max: 30, step: 0.1, value: this.props.helixConfig.rotations, power: false}}
+            valueConfig={{min: -10, max: 30, step: 0.1, value: this.props.helixConfig.rotations, polynomial: false}}
                 />
                 <RangeInputControl
                     name='Hue'
                     updateValue={this.props.updateHue}
-            valueConfig={{min: 0, max: 10, step: 0.1, value: this.props.helixConfig.hue, power: false}}
+            valueConfig={{min: 0, max: 10, step: 0.1, value: this.props.helixConfig.hue, polynomial: false}}
                 />                
                 <RangeInputControl
                     name='Gamma'
                     updateValue={this.props.updateGamma}
-                    valueConfig={{min: 0, max: 20, step: 0.1, value: this.props.helixConfig.gamma, power: true}}
+                    valueConfig={{min: 0, max: 20, step: 0.1, value: this.props.helixConfig.gamma, polynomial: true}}
                 />                
                 </div>
         );
